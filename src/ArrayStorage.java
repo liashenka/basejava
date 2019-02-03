@@ -15,16 +15,7 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-        if (size != 0) {
-            for (int i = 1; i <= size; i++) {
-                if (storage[i] == null) {
-                    storage[i] = r;
-                }
-            }
-        } else {
-            storage[0] = r;
-        }
-
+        storage[size] = r;
         size++;
     }
 
@@ -38,25 +29,17 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
+
         for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
-                storage[i] = null;
+                storage[i] = storage[i + 1];
+                storage[i + 1] = null;
                 size--;
                 break;
             }
         }
-
-            for (int i = 0; i < storage.length; i++) {
-                if (storage[i] == null) {
-                    if ((i + 1) < storage.length) {
-                        if (storage[i + 1] != null) {
-                            storage[i] = storage[i + 1];
-                            storage[i + 1] = null;
-                        }
-                    }
-                }
-            }
     }
+
 
     /**
      * @return array, contains only Resumes in storage (without null)
