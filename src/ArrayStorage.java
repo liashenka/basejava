@@ -7,26 +7,11 @@ public class ArrayStorage {
 
     void clear() {
 
-        if (size != 0) {
-            for (int i = 0; i < storage.length; i++) {
-                if (storage[i] == null) {
-                    if ((i + 1) < storage.length) {
-                        if (storage[i + 1] != null) {
-                            storage[i] = storage[i + 1];
-                            storage[i + 1] = null;
-                        }
-                    }
-                }
-            }
-
-            int notNullValue = 0;
-
-            for (int i = 0; i < storage.length; i++) {
-                if (storage[i] != null)
-                    notNullValue++;
-            }
-            size = notNullValue;
+        for (int i = 0; i < size; i++) {
+            storage[i] = null;
         }
+
+        size = 0;
     }
 
     void save(Resume r) {
@@ -44,7 +29,6 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        boolean contains = false;
         for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
                 return storage[i];
@@ -57,17 +41,32 @@ public class ArrayStorage {
         for (int i = 0; i < size; i++) {
             if (storage[i].uuid.equals(uuid)) {
                 storage[i] = null;
-                clear();
+                size--;
                 break;
             }
         }
+
+            for (int i = 0; i < storage.length; i++) {
+                if (storage[i] == null) {
+                    if ((i + 1) < storage.length) {
+                        if (storage[i + 1] != null) {
+                            storage[i] = storage[i + 1];
+                            storage[i + 1] = null;
+                        }
+                    }
+                }
+            }
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        return storage;
+        Resume[] array = new Resume[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = storage[i];
+        }
+        return array;
     }
 
     int size() {
