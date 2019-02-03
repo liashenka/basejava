@@ -1,73 +1,76 @@
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
+    int size;
 
     void clear() {
-        List<Resume> list = new ArrayList<>();
-        if(size() != 0) {
-            for (Resume resume : storage) {
-                if (resume.uuid != null)
-                    list.add(resume);
-            }
-        }
 
-        storage = list.toArray(new Resume[list.size()]);
+        if (size != 0) {
+            for (int i = 0; i < storage.length; i++) {
+                if (storage[i] == null) {
+                    if ((i + 1) < storage.length) {
+                        if (storage[i + 1] != null) {
+                            storage[i] = storage[i + 1];
+                            storage[i + 1] = null;
+                        }
+                    }
+                }
+            }
+
+            int notNullValue = 0;
+
+            for (int i = 0; i < storage.length; i++) {
+                if (storage[i] != null)
+                    notNullValue++;
+            }
+            size = notNullValue;
+        }
     }
 
     void save(Resume r) {
-        clear();
-        List<Resume> list = new ArrayList<>();
-        for (Resume resume : storage) {
-            list.add(resume);
+        if (size != 0) {
+            for (int i = 1; i <= size; i++) {
+                if (storage[i] == null) {
+                    storage[i] = r;
+                }
+            }
+        } else {
+            storage[0] = r;
         }
 
-        list.add(r);
-        storage = list.toArray(new Resume[list.size()]);
+        size++;
     }
 
     Resume get(String uuid) {
         boolean contains = false;
-        for (Resume resume : storage) {
-            if (resume.uuid.equals(uuid)) {
-                return resume;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid.equals(uuid)) {
+                return storage[i];
             }
         }
         return null;
     }
 
     void delete(String uuid) {
-        boolean contains = false;
-        for (Resume resume : storage) {
-            if (resume.uuid.equals(uuid)){
-                resume.uuid = null;
-                contains = true;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid.equals(uuid)) {
+                storage[i] = null;
+                clear();
+                break;
             }
         }
-        if(!contains) System.out.println("You don't have " + uuid + " in the storage");
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        clear();
         return storage;
     }
 
     int size() {
-        int size = 0;
-        for (Resume resume : storage) {
-            if (resume != null) {
-                size++;
-            } else {
-                break;
-            }
-        }
         return size;
     }
 }
